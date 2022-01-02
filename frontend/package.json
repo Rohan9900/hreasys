@@ -36,6 +36,7 @@
         "jspdf": "^2.4.0",
         "jspdf-autotable": "^3.5.23",
         "material-ui-popup-state": "^1.8.0",
+        "node-sass": "^7.0.1",
         "pdfmake": "^0.2.4",
         "primeflex": "^3.1.0",
         "primeicons": "^5.0.0",
@@ -105,6 +106,6 @@
         "eslint-plugin-react": "^7.26.1",
         "eslint-plugin-react-hooks": "4.0.8",
         "prettier": "^2.2.1",
-        "sass": "^1.42.1"
+        "sass": "^1.45.2"
     }
 }
