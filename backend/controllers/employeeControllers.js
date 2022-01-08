@@ -10,7 +10,7 @@ const csv = require("fast-csv");
 exports.newEmployees = catchAsyncErrors(async (req, res, next) => {
   const { personalDetails, companyDetails, salaryDetails, bankDetails } =
     req.body;
-  console.log(res.body);
+  console.log(req.body);
   const employee = await Employee.create({
     personalDetails,
     companyDetails,
@@ -116,18 +116,17 @@ exports.allEmployeescsv = catchAsyncErrors(async (req, res, next) => {
         x.personalDetails["mobileNo"] = row["Mobile"];
         x.personalDetails["gender"] = row["Gender"];
         x.personalDetails["dob"] = row["D.O.B"];
-        x.personalDetails["currentAddress"] = row["Local Address"];
+        x.personalDetails["currentAddress"] = row["Current Address"];
         x.personalDetails["permanentAddress"] = row["Permanent Address"];
         x.companyDetails["UAN"] = row["Uan"];
-        x.companyDetails["aadhaarNo"] = row["Aadhar"];
-        x.companyDetails["selectWages"] = row["select Wages"];
-        x.companyDetails["sickLeave"] = row["sick Leave"];
-        x.companyDetails["casualLeave"] = row["casual Leave"];
-
+        x.companyDetails["aadhaarNo"] = row["Aadhaar"];
         x.companyDetails["panNo"] = row["PAN"];
         x.companyDetails["drivingLicense"] = row["DL"];
         x.companyDetails["designation"] = row["Designation"];
         x.companyDetails["joiningDate"] = row["D.O.J"];
+        x.companyDetails["selectWages"] = row["Wages Mode"];
+        x.companyDetails["sickLeave"] = row["Sick Leave"];
+        x.companyDetails["casualLeave"] = row["Casual Leave"];
         x.salaryDetails["dailyWages"] = row["Daily Wages"];
         x.salaryDetails["basicSalary"] = row["Basic"];
         x.salaryDetails["hra"] = row["HRA"];
@@ -135,13 +134,13 @@ exports.allEmployeescsv = catchAsyncErrors(async (req, res, next) => {
         x.salaryDetails["medical"] = row["Medical"];
         x.salaryDetails["education"] = row["Education"];
         x.salaryDetails["canteen"] = row["Canteen"];
-        x.salaryDetails["incomeTax"] = row["IncomeTax"];
-        x.bankDetails["bankName"] = row["Bank"];
+        x.salaryDetails["incomeTax"] = row["Income Tax"];
+        x.bankDetails["bankName"] = row["Bank Name"];
         x.bankDetails["ifscCode"] = row["IFSC Code"];
-        x.bankDetails["accountNo"] = row["A/c no."];
-        x.bankDetails["PFNominee"] = row["PF No."];
-        x.bankDetails["gratuityNominee"] = row["Gratuity No."];
-        x.bankDetails["leaveNominee"] = row["Leave No."];
+        x.bankDetails["accountNo"] = row["Account Number"];
+        x.bankDetails["PFNominee"] = row["PF Nominee"];
+        x.bankDetails["gratuityNominee"] = row["Gratuity Nominee"];
+        x.bankDetails["leaveNominee"] = row["Leave Nominee"];
         csvData.push(x);
       })
 

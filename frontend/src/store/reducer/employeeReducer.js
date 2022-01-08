@@ -77,10 +77,11 @@ export const addRoleReducer = (state = {}, action) => {
             return state;
     }
 };
-export const myEmployeeReducer = (state = { orders: [] }, action) => {
+export const myEmployeeReducer = (state = { orders: null }, action) => {
     switch (action.type) {
         case MY_EMPLOYEE_REQUEST:
             return {
+                orders: null,
                 loading: true
             };
         case MY_EMPLOYEE_SUCCESS:

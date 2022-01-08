@@ -9,7 +9,6 @@ const csv = require("fast-csv");
 // Create New EmployeeAttendance or updateAttendance => api/v1/employee/attendance
 
 exports.newEmployeesAttendance = catchAsyncErrors(async (req, res, next) => {
-  
   const {
     UAN,
     fullName,
@@ -33,7 +32,7 @@ exports.newEmployeesAttendance = catchAsyncErrors(async (req, res, next) => {
   let myemployee = await Employee.findOne({
     _id: req.body.employee,
   });
-  console.log(myemployee)
+  console.log(myemployee);
 
   //previous month employee
 
@@ -62,31 +61,25 @@ exports.newEmployeesAttendance = catchAsyncErrors(async (req, res, next) => {
       }
     }
 
-    if (
-      employeeAttendance.leave == "Casual Leave"
-    ) {
-      if(parseInt(myemployee.companyDetails.casualLeave)==0){
+    if (employeeAttendance.leave == "Casual Leave") {
+      if (parseInt(myemployee.companyDetails.casualLeave) == 0) {
         employeeAttendance.attendance = false;
         employeeAttendance.leave = "";
+      } else {
+        myemployee.companyDetails.casualLeave =
+          parseInt(myemployee.companyDetails.casualLeave) - 1;
       }
-      else{
-      myemployee.companyDetails.casualLeave=(parseInt(myemployee.companyDetails.casualLeave)-1);
-      }
-      
     }
-    if (
-      employeeAttendance.leave == "Sick Leave"
-    ) {
-      if(parseInt(myemployee.companyDetails.sickLeave)==0){
-      console.log(myemployee.companyDetails.sickLeave)
+    if (employeeAttendance.leave == "Sick Leave") {
+      if (parseInt(myemployee.companyDetails.sickLeave) == 0) {
+        console.log(myemployee.companyDetails.sickLeave);
 
         employeeAttendance.attendance = false;
         employeeAttendance.leave = "";
+      } else {
+        myemployee.companyDetails.sickLeave =
+          parseInt(myemployee.companyDetails.sickLeave) - 1;
       }
-      else{
-      myemployee.companyDetails.sickLeave=parseInt(myemployee.companyDetails.sickLeave)-1;
-      }
-      
     }
 
     if (
@@ -94,9 +87,8 @@ exports.newEmployeesAttendance = catchAsyncErrors(async (req, res, next) => {
       employeeAttendance.leave == "Casual Leave" ||
       employeeAttendance.leave == "Sick Leave" ||
       employeeAttendance.leave == "Paid Leave" ||
-      employeeAttendance.leave == "Paid Holiday"||
+      employeeAttendance.leave == "Paid Holiday" ||
       employeeAttendance.leave == "Paid Weekly Off"
-
     ) {
       employeeExist.totalPresent += 1;
     } else if (employeeAttendance.attendance == false) {
@@ -233,7 +225,6 @@ exports.newEmployeesAttendance = catchAsyncErrors(async (req, res, next) => {
       fullName: fullName,
       mobileNo: mobileNo,
       joiningDate: joiningDate,
-      designation: designation,
       dailyWages: dailyWages,
       employee: req.body.employee,
       employeeAttendance: [employeeAttendance],
@@ -422,11 +413,30 @@ exports.attendancecsv = catchAsyncErrors(async (req, res, next) => {
       })
 
       .on("data", async (row) => {
+        //employee
         const employees = await Employee.findOne({
-          "companyDetails.UAN": row.aadhaar,
+          "companyDetails.aadhaarNo": row.aadhaar,
         });
-        console.log(row.aadhaar)
+        console.log(row.aadhaar,employees);
+
         if (employees) {
+          //previous month employee
+          let prevMonthEmployeeExist = await EmployeeAttendance.findOne({
+            employee: employees._id,
+            attendanceMonth: parseInt(row.month) - 1,
+            attendanceYear: parseInt(row.year),
+            user: req.user.id,
+          });
+
+          //previous year employee
+
+          let prevYearEmployeeExist = await EmployeeAttendance.findOne({
+            employee: employees._id,
+            attendanceMonth: 12,
+            attendanceYear: parseInt(row.year) - 1,
+            user: req.user.id,
+          });
+
           let employeeExist = await EmployeeAttendance.findOne({
             employee: employees._id,
             attendanceMonth: row.month,
@@ -435,6 +445,8 @@ exports.attendancecsv = catchAsyncErrors(async (req, res, next) => {
           });
 
           if (employeeExist) {
+            //if employee takes leave after paid holiday but date is one
+
             let attarray = [];
             let index = -1;
             for (let m = 0; m < employeeExist.employeeAttendance.length; m++) {
@@ -513,17 +525,18 @@ exports.attendancecsv = catchAsyncErrors(async (req, res, next) => {
               }
             }
 
-            for (let k = 1; k < 31; k++) {
+            for (let k = 1; k <= 31; k++) {
               if (row[k] != undefined && attarray.indexOf(k) == -1) {
                 let m = {};
                 m.date = k;
+
                 switch (row[k]) {
                   case "P":
                     m.attendance = true;
 
                     break;
                   case "CL":
-                    m.attendance = false;
+                    m.attendance = true;
                     m.leave = "Casual Leave";
                     break;
                   case "A":
@@ -531,11 +544,11 @@ exports.attendancecsv = catchAsyncErrors(async (req, res, next) => {
 
                     break;
                   case "PL":
-                    m.attendance = false;
+                    m.attendance = true;
                     m.leave = "Paid Leave";
                     break;
                   case "SL":
-                    m.attendance = false;
+                    m.attendance = true;
                     m.leave = "Sick Leave";
 
                     break;
@@ -554,12 +567,12 @@ exports.attendancecsv = catchAsyncErrors(async (req, res, next) => {
 
                     break;
                   case "PH":
-                    m.attendance = false;
+                    m.attendance = true;
                     m.leave = "Paid Holiday";
 
                     break;
                   case "PWO":
-                    m.attendance = false;
+                    m.attendance = true;
                     m.leave = "Paid Weekly Off";
 
                     break;
@@ -573,16 +586,139 @@ exports.attendancecsv = catchAsyncErrors(async (req, res, next) => {
 
                     break;
                 }
+
+                let prevdate = -1;
+
+                if (row[k] == "CL") {
+                  if (parseInt(employees.companyDetails.casualLeave) == 0) {
+                    m.attendance = false;
+                    m.leave = "";
+                  } else {
+                    employees.companyDetails.casualLeave =
+                      parseInt(employees.companyDetails.casualLeave) - 1;
+                  }
+                }
+                if (row[k] == "SL") {
+                  if (parseInt(employees.companyDetails.sickLeave) == 0) {
+                    console.log(employees.companyDetails.sickLeave);
+
+                    m.attendance = false;
+                    m.leave = "";
+                  } else {
+                    employees.companyDetails.sickLeave =
+                      parseInt(employees.companyDetails.sickLeave) - 1;
+                  }
+                }
+
+                if (
+                  row[k] == "P" ||
+                  row[k] == "CL" ||
+                  row[k] == "SL" ||
+                  row[k] == "PL" ||
+                  row[k] == "PH" ||
+                  row[k] == "PWO"
+                ) {
+                  employeeExist.totalPresent += 1;
+                } else {
+                  employeeExist.totalPresent -= 1;
+                }
+                if (employeeExist.totalLeave > 0 && row[k] == "PL") {
+                  employeeExist.carryForward -= 1;
+                  employeeExist.availLeave += 1;
+                }
+
+                //if employee takes leave after paid holiday but date is not one
+
+                if (k !== 1 && m.attendance === false) {
+                  for (
+                    let m = 0;
+                    m < employeeExist.employeeAttendance.length;
+                    m++
+                  ) {
+                    if (employeeExist.employeeAttendance[m].date == k - 2) {
+                      prevdate = m;
+                      break;
+                    }
+                  }
+
+                  for (
+                    let m = 0;
+                    m < employeeExist.employeeAttendance.length;
+                    m++
+                  ) {
+                    if (
+                      employeeExist.employeeAttendance[m].date == k - 1 &&
+                      employeeExist.employeeAttendance[m].leave ==
+                        "Paid Holiday" &&
+                      employeeExist.employeeAttendance[prevdate].attendance ==
+                        false
+                    ) {
+                      console.log("x");
+                      employeeExist.employeeAttendance[m].attendance = false;
+                      employeeExist.employeeAttendance[m].leave = "";
+                    }
+                  }
+                }
+
+                if (
+                  prevMonthEmployeeExist &&
+                  k === 1 &&
+                  m.attendance === false &&
+                  prevMonthEmployeeExist.employeeAttendance[
+                    prevMonthEmployeeExist.employeeAttendance.length - 1
+                  ].leave == "Paid Holiday" &&
+                  prevMonthEmployeeExist.employeeAttendance[
+                    prevMonthEmployeeExist.employeeAttendance.length - 2
+                  ].attendance == false
+                ) {
+                  prevMonthEmployeeExist.employeeAttendance[
+                    prevMonthEmployeeExist.employeeAttendance.length - 1
+                  ].attendance = false;
+                  prevMonthEmployeeExist.employeeAttendance[
+                    prevMonthEmployeeExist.employeeAttendance.length - 1
+                  ].leave = "";
+                }
+
+                //if employee takes leave after paid holiday but date is two
+
+                if (
+                  prevMonthEmployeeExist &&
+                  k === 1 &&
+                  m.attendance === false &&
+                  employeeExist.employeeAttendance[0].leave == "Paid Holiday" &&
+                  prevMonthEmployeeExist.employeeAttendance[
+                    prevMonthEmployeeExist.employeeAttendance.length - 1
+                  ].attendance == false
+                ) {
+                  employeeExist.employeeAttendance[0].attendance = false;
+                  employeeExist.employeeAttendance[0].leave = "";
+                }
+
                 employeeExist.employeeAttendance.push(m);
                 // console.log(employeeExist);
               }
             }
 
             employeeExist = await employeeExist.save();
+            employees = await employees.save();
+
+            if (prevMonthEmployeeExist) {
+              prevMonthEmployeeExist = await prevMonthEmployeeExist.save();
+            }
           } else {
             let empattendance = [];
+            console.log(row.aadhaar);
 
-            for (let k = 1; k < 31; k++) {
+            let totalleave = 0;
+            let totalpresent = 0;
+            let carryForward = 0;
+            let availLeave = 0;
+
+            for (let k = 1; k <= 31; k++) {
+              totalleave = 0;
+              totalpresent = 0;
+              carryForward = 0;
+              availLeave = 0;
               if (row[k] != undefined) {
                 let m = {};
                 m.date = k;
@@ -592,19 +728,19 @@ exports.attendancecsv = catchAsyncErrors(async (req, res, next) => {
 
                     break;
                   case "CL":
-                    m.attendance = false;
+                    m.attendance = true;
                     m.leave = "Casual Leave";
                     break;
                   case "A":
                     m.attendance = false;
-
+m.leave=""
                     break;
                   case "PL":
-                    m.attendance = false;
+                    m.attendance = true;
                     m.leave = "Paid Leave";
                     break;
                   case "SL":
-                    m.attendance = false;
+                    m.attendance = true;
                     m.leave = "Sick Leave";
 
                     break;
@@ -623,12 +759,12 @@ exports.attendancecsv = catchAsyncErrors(async (req, res, next) => {
 
                     break;
                   case "PH":
-                    m.attendance = false;
+                    m.attendance = true;
                     m.leave = "Paid Holiday";
 
                     break;
                   case "PWO":
-                    m.attendance = false;
+                    m.attendance = true;
                     m.leave = "Paid Weekly Off";
 
                     break;
@@ -639,9 +775,58 @@ exports.attendancecsv = catchAsyncErrors(async (req, res, next) => {
                     break;
                   default:
                     m.attendance = false;
+                    m.leave=""
 
                     break;
                 }
+
+                if (
+                  parseInt(row.month) == 1 &&
+                  prevYearEmployeeExist &&
+                  prevYearEmployeeExist.totalPresent > 240
+                ) {
+                  totalleave =
+                    parseInt(prevYearEmployeeExist.totalPresent / 20) +
+                    prevYearEmployeeExist.carryForward;
+                  carryForward = totalleave;
+                } else if (parseInt(row.month) != 1 && prevMonthEmployeeExist) {
+                  totalleave = prevMonthEmployeeExist.totalLeave;
+                  if (m.attendance == true) {
+                    totalpresent = prevMonthEmployeeExist.totalPresent + 1;
+                  } else {
+                    totalpresent = prevMonthEmployeeExist.totalPresent;
+                  }
+                  carryForward = prevMonthEmployeeExist.carryForward;
+                  availLeave = prevMonthEmployeeExist.availLeave;
+                }
+                if (parseInt(row.month) == 1 && m.attendance == true) {
+                  totalpresent += 1;
+                }
+
+                //if employee takes leave after paid holiday but date is one
+
+                if (
+                  prevMonthEmployeeExist &&
+                  k === 1 &&
+                  m.attendance === false &&
+                  prevMonthEmployeeExist.employeeAttendance[
+                    prevMonthEmployeeExist.employeeAttendance.length - 1
+                  ].leave == "Paid Holiday" &&
+                  prevMonthEmployeeExist.employeeAttendance[
+                    prevMonthEmployeeExist.employeeAttendance.length - 2
+                  ].attendance == false
+                ) {
+                  prevMonthEmployeeExist.employeeAttendance[
+                    prevMonthEmployeeExist.employeeAttendance.length - 1
+                  ].attendance = false;
+                  prevMonthEmployeeExist.employeeAttendance[
+                    prevMonthEmployeeExist.employeeAttendance.length - 1
+                  ].leave = "";
+                }
+                if (prevMonthEmployeeExist) {
+                  prevMonthEmployeeExist = await prevMonthEmployeeExist.save();
+                }
+
                 empattendance.push(m);
               }
             }
@@ -650,15 +835,14 @@ exports.attendancecsv = catchAsyncErrors(async (req, res, next) => {
               fullName: employees.personalDetails.fullName,
               mobileNo: employees.personalDetails.mobileNo,
               joiningDate: employees.companyDetails.joiningDate,
-              designation: employees.companyDetails.designation,
               dailyWages: employees.companyDetails.dailyWages,
               employee: employees._id,
 
-              totalPresent: row.totalpresent,
-              totalLeave: row.totalleave,
-              availLeave: row.availLeave,
-              carryForward: row.carryForward,
-              
+              totalPresent: totalpresent,
+              totalLeave: totalleave,
+              availLeave: availLeave,
+              carryForward: carryForward,
+
               employeeAttendance: empattendance,
               overTime: row["OT (Days)"],
               attendanceMonth: row.month,

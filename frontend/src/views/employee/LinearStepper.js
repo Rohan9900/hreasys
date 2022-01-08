@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { Typography, TextField, Button, Stepper, Step, StepLabel, FormLabel } from '@mui/material';
+import { Typography, TextField, Button, Stepper, Step, StepLabel } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useForm, Controller, FormProvider, useFormContext } from 'react-hook-form';
 import InputLabel from '@mui/material/InputLabel';
@@ -116,9 +116,10 @@ const BasicDetails = () => {
                                 id="mobile-no"
                                 label="Mobile Number"
                                 variant="outlined"
-                                placeholder="Enter Mobile Number"
+                                placeholder="Enter 10 Digit Mobile Number"
                                 fullWidth
                                 margin="normal"
+                                inputProps={{ maxLength: 10 }}
                                 {...field}
                                 error={Boolean(errors?.mobileNo)}
                                 helperText={errors.mobileNo?.message}
@@ -238,18 +239,16 @@ const CompanyDetails = () => {
                     <Controller
                         control={control}
                         name="uanNumber"
-                        rules={{ required: 'this field is required.' }}
                         render={({ field }) => (
                             <TextField
                                 id="uan"
                                 label="UAN Number"
                                 variant="outlined"
-                                placeholder="Enter UAN Number"
+                                placeholder="Enter 12 Digit UAN Number"
                                 fullWidth
                                 margin="normal"
+                                inputProps={{ maxLength: 12 }}
                                 {...field}
-                                error={Boolean(errors?.uanNumber)}
-                                helperText={errors.uanNumber?.message}
                             />
                         )}
                     />
@@ -266,9 +265,10 @@ const CompanyDetails = () => {
                                 id="aadhaar-number"
                                 label="Aadhaar Number"
                                 variant="outlined"
-                                placeholder="Enter Aadhaar Number"
+                                placeholder="Enter 12 Digit Aadhaar Number"
                                 fullWidth
                                 margin="normal"
+                                inputProps={{ maxLength: 12 }}
                                 {...field}
                                 error={Boolean(errors?.aadhaarNumber)}
                                 helperText={errors.aadhaarNumber?.message}
@@ -286,9 +286,10 @@ const CompanyDetails = () => {
                                 id="pan-number"
                                 label="Pan Number"
                                 variant="outlined"
-                                placeholder="Enter Pan Number"
+                                placeholder="Enter 10 Digit Pan Number"
                                 fullWidth
                                 margin="normal"
+                                inputProps={{ maxLength: 10 }}
                                 {...field}
                                 error={Boolean(errors?.panNumber)}
                                 helperText={errors.panNumber?.message}
@@ -302,7 +303,6 @@ const CompanyDetails = () => {
                     <Controller
                         control={control}
                         name="drivingLicenses"
-                        rules={{ required: 'this field is required.' }}
                         render={({ field }) => (
                             <TextField
                                 id="driving-licenses"
@@ -312,8 +312,6 @@ const CompanyDetails = () => {
                                 fullWidth
                                 margin="normal"
                                 {...field}
-                                error={Boolean(errors?.drivingLicenses)}
-                                helperText={errors.drivingLicenses?.message}
                             />
                         )}
                     />
@@ -333,13 +331,13 @@ const CompanyDetails = () => {
                                     label="Designation"
                                     onChange={handleChange}
                                     {...field}
-                                    error={Boolean(errors?.drivingLicenses)}
-                                    helperText={errors.drivingLicenses?.message}
+                                    error={Boolean(errors?.designation)}
+                                    helperText={errors.designation?.message}
                                 >
                                     <MenuItem value="Skilled">Skilled</MenuItem>
-                                    <MenuItem value="Semi-Skilled">Semi-Skilled</MenuItem>
-                                    <MenuItem value="Un-Skilled">Un-Skilled</MenuItem>
-                                    <MenuItem value="Other">Other</MenuItem>
+                                    <MenuItem value="Semi Skilled">Semi Skilled</MenuItem>
+                                    <MenuItem value="Un Skilled">Un Skilled</MenuItem>
+                                    <MenuItem value="Others">Others</MenuItem>
                                 </Select>
                             </FormControl>
                         )}
@@ -374,7 +372,7 @@ const CompanyDetails = () => {
                         rules={{ required: 'this field is required.' }}
                         render={({ field }) => (
                             <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">Select Wages</InputLabel>
+                                <InputLabel id="demo-simple-select-label">Mode of Wages</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
@@ -398,18 +396,15 @@ const CompanyDetails = () => {
                     <Controller
                         control={control}
                         name="sickLeave"
-                        rules={{ required: 'this field is required.' }}
                         render={({ field }) => (
                             <TextField
-                                id="sick-leavr"
+                                id="sick-leave"
                                 label="Sick Leave"
                                 variant="outlined"
                                 placeholder="Enter Sick Leave"
                                 fullWidth
                                 margin="normal"
                                 {...field}
-                                error={Boolean(errors?.sickLeave)}
-                                helperText={errors.sickLeave?.message}
                             />
                         )}
                     />
@@ -418,7 +413,6 @@ const CompanyDetails = () => {
                     <Controller
                         control={control}
                         name="casualLeave"
-                        rules={{ required: 'this field is required.' }}
                         render={({ field }) => (
                             <TextField
                                 id="casual-leave"
@@ -428,8 +422,6 @@ const CompanyDetails = () => {
                                 fullWidth
                                 margin="normal"
                                 {...field}
-                                error={Boolean(errors?.casual)}
-                                helperText={errors.casual?.message}
                             />
                         )}
                     />
@@ -447,7 +439,7 @@ const SalaryDetails = () => {
     return (
         <>
             <Grid container spacing={6} alignItems="center" justifyContent="center" style={{ marginTop: '5px' }}>
-                <Grid item xs={12} sm={5}>
+                {/* <Grid item xs={12} sm={5}>
                     <Controller
                         control={control}
                         name="dailyWages"
@@ -466,7 +458,7 @@ const SalaryDetails = () => {
                             />
                         )}
                     />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12} sm={5}>
                     <Controller
                         control={control}
@@ -586,7 +578,6 @@ const SalaryDetails = () => {
                                 placeholder="Enter Employee Canteen"
                                 fullWidth
                                 margin="normal"
-                                defaultValue={0}
                                 {...field}
                                 error={Boolean(errors?.canteen)}
                                 helperText={errors.canteen?.message}
@@ -605,7 +596,6 @@ const SalaryDetails = () => {
                                 label="Income Tax"
                                 variant="outlined"
                                 placeholder="Enter Income Tax"
-                                defaultValue={0}
                                 fullWidth
                                 margin="normal"
                                 {...field}
@@ -663,6 +653,7 @@ const BankDetails = () => {
                                 placeholder="Enter Bank IFSC Code"
                                 fullWidth
                                 margin="normal"
+                                inputProps={{ maxLength: 11 }}
                                 {...field}
                                 error={Boolean(errors?.bankIfsc)}
                                 helperText={errors.bankIfsc?.message}
@@ -885,6 +876,20 @@ const LinaerStepper = () => {
         } else {
             setActiveStep(activeStep + 1);
             setSkippedSteps(skippedSteps.filter((skipItem) => skipItem !== activeStep));
+        }
+
+        if (activeStep === steps.length - 2) {
+            const x =
+                parseInt(data.basicSalary, 10) +
+                parseInt(data.hra, 10) +
+                parseInt(data.con, 10) +
+                parseInt(data.medical, 10) +
+                parseInt(data.education, 10) +
+                parseInt(data.canteen, 10) +
+                parseInt(data.incomeTax, 10);
+
+            methods.setValue('dailyWages', Math.round(x).toString());
+            console.log(methods.getValues());
         }
     };
 

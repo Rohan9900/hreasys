@@ -13,6 +13,8 @@ import { gridSpacing } from 'store/constant/customizationConstant';
 import NewJoiningCard from './NewJoiningCard';
 import { useSelector } from 'react-redux';
 import LatestClient from './LatestClient';
+import ViewPFRemittance from './ViewPFRemittance';
+import AddPFRemittanceCard from './AddPFRemittance';
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
@@ -77,10 +79,10 @@ const Dashboard = () => {
                             <Grid item lg={4} md={12} sm={12} xs={12}>
                                 <Grid container spacing={gridSpacing}>
                                     <Grid item sm={6} xs={12} md={6} lg={12}>
-                                        <AddClientCard isLoading={isLoading} />
+                                        <AddPFRemittanceCard isLoading={isLoading} />
                                     </Grid>
                                     <Grid item sm={6} xs={12} md={6} lg={12}>
-                                        <ManageClientCard isLoading={isLoading} />
+                                        <ViewPFRemittance isLoading={isLoading} />
                                     </Grid>
                                 </Grid>
                             </Grid>

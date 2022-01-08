@@ -5,7 +5,8 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 const PaymentSidepanel = (props) => {
-    const { parentCallback, data, count } = props;
+    const { parentCallback, data, count, todaydays } = props;
+    console.log(data);
     return (
         <div className="salary-sidepanel-container">
             <div className="salary-sidepanel-box1">
@@ -50,7 +51,11 @@ const PaymentSidepanel = (props) => {
                 </div>
                 <div>
                     <p>Daily Wages</p>
-                    <b>{data?.salaryDetails?.dailyWages}</b>
+                    <b>
+                        {data?.companyDetails?.selectWages === 'Monthly Wages'
+                            ? Math.round(data?.salaryDetails?.dailyWages / todaydays)
+                            : Math.round(data?.salaryDetails?.dailyWages)}
+                    </b>
                 </div>
             </div>
             <div className="salary-sidepanel-box3">
@@ -58,27 +63,51 @@ const PaymentSidepanel = (props) => {
                 <div className="salary-sidepanel-box-cont">
                     <div>
                         <p>Basic Salary</p>
-                        <b>{Math.round((data?.salaryDetails?.basicSalary * count.count) / 30)}</b>
+                        <b>
+                            {data?.companyDetails?.selectWages === 'Monthly Wages'
+                                ? Math.round((data?.salaryDetails?.basicSalary * count.count) / todaydays)
+                                : Math.round(data?.salaryDetails?.basicSalary) * count.count}
+                        </b>
                     </div>
                     <div>
                         <p>HRA</p>
-                        <b>{Math.round((data?.salaryDetails?.hra * count.count) / 30)}</b>
+                        <b>
+                            {data?.companyDetails?.selectWages === 'Monthly Wages'
+                                ? Math.round((data?.salaryDetails?.hra * count.count) / todaydays)
+                                : Math.round(data?.salaryDetails?.hra) * count.count}
+                        </b>
                     </div>
                     <div>
                         <p>Con</p>
-                        <b>{Math.round((data?.salaryDetails?.con * count.count) / 30)}</b>
+                        <b>
+                            {data?.companyDetails?.selectWages === 'Monthly Wages'
+                                ? Math.round((data?.salaryDetails?.con * count.count) / todaydays)
+                                : Math.round(data?.salaryDetails?.con) * count.count}
+                        </b>
                     </div>
                     <div>
                         <p>Medical</p>
-                        <b>{Math.round((data?.salaryDetails?.medical * count.count) / 30)}</b>
+                        <b>
+                            {data?.companyDetails?.selectWages === 'Monthly Wages'
+                                ? Math.round((data?.salaryDetails?.medical * count.count) / todaydays)
+                                : Math.round(data?.salaryDetails?.medical) * count.count}
+                        </b>
                     </div>
                     <div>
                         <p>Education</p>
-                        <b>{Math.round((data?.salaryDetails?.education * count.count) / 30)}</b>
+                        <b>
+                            {data?.companyDetails?.selectWages === 'Monthly Wages'
+                                ? Math.round((data?.salaryDetails?.education * count.count) / todaydays)
+                                : Math.round(data?.salaryDetails?.education) * count.count}
+                        </b>
                     </div>
                     <div>
                         <p>Canteen</p>
-                        <b>{Math.round((data?.salaryDetails?.canteen * count.count) / 30)}</b>
+                        <b>
+                            {data?.companyDetails?.selectWages === 'Monthly Wages'
+                                ? Math.round((data?.salaryDetails?.canteen * count.count) / todaydays)
+                                : Math.round(data?.salaryDetails?.canteen) * count.count}
+                        </b>
                     </div>
                 </div>
             </div>
@@ -87,7 +116,11 @@ const PaymentSidepanel = (props) => {
                 <div className="salary-sidepanel-box-cont">
                     <div>
                         <p>Provident Fund (PF)</p>
-                        <b>{Math.round((((data?.salaryDetails?.basicSalary * count.count) / 30) * 12) / 100)}</b>
+                        <b>
+                            {data?.companyDetails?.selectWages === 'Monthly Wages'
+                                ? Math.round((((data?.salaryDetails?.basicSalary * count.count) / todaydays) * 12) / 100)
+                                : 0}
+                        </b>
                     </div>
                     <div>
                         <p>Canteen</p>

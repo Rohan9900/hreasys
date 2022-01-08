@@ -23,19 +23,7 @@ const attendanceSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    designation: {
-        type: String,
-        required: [true, "Please Select Employee Designation"],
-        enum: {
-            values: [
-                'Skilled',
-                'Semi-Skilled',
-                'Un-Skilled',
-                'Other'
-            ],
-            message: "Please select one field from Employee Designation"
-        }
-    },
+    
     dailyWages: {
         type: Number,
         required: [true, "Please Enter Employee Daily"],

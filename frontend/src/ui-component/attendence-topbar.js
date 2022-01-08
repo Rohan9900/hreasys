@@ -17,10 +17,23 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
 
 export default function AttendanceTopbar(props) {
-    const { name, date, csv, salary, parentCallback, parentCallback2, parentCallback3, isshow, today, salaryformat, search } = props;
+    const {
+        name,
+        date,
+        csv,
+        salary,
+        parentCallback,
+        csvpage,
+        parentCallback2,
+        parentCallback3,
+        isshow,
+        today,
+        salaryformat,
+        search,
+        csvdata
+    } = props;
 
     const [value, setValue] = React.useState(new Date());
     const [open, setOpen] = React.useState(false);
@@ -50,21 +63,6 @@ export default function AttendanceTopbar(props) {
                                 <SearchSection />
                             </StyledTableCell>
                         )}
-                        {csv === 'true' && (
-                            <StyledTableCell align="center">
-                                <DownloadCsv />
-                            </StyledTableCell>
-                        )}
-                        {salary === 'true' && (
-                            <StyledTableCell align="center">
-                                <SalaryStatement parentCallback={parentCallback} />
-                            </StyledTableCell>
-                        )}
-                        {salaryformat === 'true' && (
-                            <StyledTableCell align="center">
-                                <SalaryStatementFormat parentCallback3={parentCallback3} />
-                            </StyledTableCell>
-                        )}
                         {date === 'true' && (
                             <StyledTableCell align="center">
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -87,6 +85,21 @@ export default function AttendanceTopbar(props) {
                                         />
                                     )}
                                 </LocalizationProvider>
+                            </StyledTableCell>
+                        )}
+                        {salaryformat === 'true' && (
+                            <StyledTableCell align="center">
+                                <SalaryStatementFormat parentCallback3={parentCallback3} />
+                            </StyledTableCell>
+                        )}
+                        {salary === 'true' && (
+                            <StyledTableCell align="center">
+                                <SalaryStatement parentCallback={parentCallback} />
+                            </StyledTableCell>
+                        )}
+                        {csv === 'true' && (
+                            <StyledTableCell align="center">
+                                <DownloadCsv tempdate={value} data={csvdata} page={csvpage} />
                             </StyledTableCell>
                         )}
                         {today === 'true' && (

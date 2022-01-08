@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 //mongodb://localhost:27017/EASYHR
 //mongodb+srv://totalhr2021:usLjJYhhgOCk5iWt@cluster0.8uj9i.mongodb.net/easyhr?retryWrites=true&w=majority
 const connectDatabase = () => {
-    mongoose.connect("mongodb+srv://admin:9876904594@login.bs26v.mongodb.net/EASYHR?retryWrites=true&w=majority", {
+    mongoose.connect("mongodb+srv://totalhr2021:usLjJYhhgOCk5iWt@cluster0.8uj9i.mongodb.net/easyhr?retryWrites=true&w=majority", {
 
         //For avoid Warnings
         useNewUrlParser: true,

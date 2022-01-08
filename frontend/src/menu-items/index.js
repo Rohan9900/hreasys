@@ -1,7 +1,6 @@
 import dashboard from './dashboard';
 import attendance from './attendance';
 import payments from './payments';
-import roles from './roles';
 import employee from './employee';
 
 // ==============================|| MENU ITEMS ||============================== //

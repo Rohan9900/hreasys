@@ -8,7 +8,6 @@ const employeeSchema = new mongoose.Schema({
             trim: true,
             maxlength: [100, 'Name cannot exceed 100 character']
         },
-
         fatherName: {
             type: String,
             required: [true, "Please Enter Father Name"],
@@ -49,7 +48,6 @@ const employeeSchema = new mongoose.Schema({
     companyDetails:{
         UAN: {
             type: String,
-            required: [true, "Please Enter UAN Number"],
             trim: true,
             unique: true,
             maxlength: [12, 'UAN Number cannot exceed 12 character']
@@ -78,9 +76,9 @@ const employeeSchema = new mongoose.Schema({
             enum: {
                 values: [
                     'Skilled',
-                    'Semi-Skilled',
-                    'Un-Skilled',
-                    'Other'
+                    'Semi Skilled',
+                    'Un Skilled',
+                    'Others'
                 ],
                 message: "Please select one field from Employee Designation"
             }
@@ -103,10 +101,13 @@ const employeeSchema = new mongoose.Schema({
         sickLeave: {
             type: Number,
             required: [true, "Please Enter Sick Leave"],
+            default: 0,
+            trim: true
         },
         casualLeave: {
             type: String,
             required: [true, "Please Enter Casual Leave"],
+            default: 0,
             trim: true
         }
     },
@@ -115,42 +116,42 @@ const employeeSchema = new mongoose.Schema({
             type: Number,
             required: [true, "Please Enter Daily Wages"],
             maxlength: [7, 'Price cannot exceed 5 character'],
-            default: 0.00
+            default: 0
         },
         basicSalary: {
             type: Number,
             required: [true, "Please Enter Basic Salary"],
-            default: 0.00
+            default: 0
         },
         hra: {
             type: Number,
             required: [true, "Please Enter HRA"],
-            default: 0.00
+            default: 0
         },
         con: {
             type: Number,
             required: [true, "Please Enter Con"],
-            default: 0.00
+            default: 0
         },
         medical: {
             type: Number,
             required: [true, "Please Enter Medical Expenses"],
-            default: 0.00
+            default: 0
         },
         education: {
             type: Number,
             required: [true, "Please Enter Education Expenses"],
-            default: 0.00
+            default: 0
         },
         canteen: {
             type: Number,
             required: [true, "Please Enter Canteen Expenses"],
-            default: 0.00
+            default: 0
         },
         incomeTax: {
             type: Number,
             required: [true, "Please Enter Income Tax"],
-            default: 0.00
+            default: 0
         },
     },
     bankDetails:{

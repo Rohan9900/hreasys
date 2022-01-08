@@ -21,7 +21,7 @@ const LeaveManage = Loadable(lazy(() => import('views/attedance/leaveManage')));
 // Payments Routing
 const ViewSalary = Loadable(lazy(() => import('views/payments/viewSalary')));
 const ViewBonus = Loadable(lazy(() => import('views/payments/viewBonus')));
-
+const ECRChallan = Loadable(lazy(() => import('views/payments/ECRChallan')));
 // User Role Routing
 const AddUser = Loadable(lazy(() => import('views/roles/addUser')));
 const ManageUser = Loadable(lazy(() => import('views/roles/manageUser')));
@@ -67,6 +67,10 @@ const MainRoutes = {
         {
             path: '/payments/view-salary',
             element: <ViewSalary />
+        },
+        {
+            path: '/payments/ecr-challan',
+            element: <ECRChallan />
         },
         {
             path: '/roles/add-user',
